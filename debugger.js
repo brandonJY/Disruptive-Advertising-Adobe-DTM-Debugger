@@ -295,6 +295,18 @@ window._dtmDebug = {
             if(r.conditions){
               def.push('<tr><td><b>Condition</b></td><td><pre class="prettyprint"><code class="language-js">'+js_beautify(r.conditions.toString())+'</code></pre></td></tr>');
             }
+            if(r.bubbleFireIfParent!=null){
+                var isDefault=r.bubbleFireIfParent ? ' (default)':'';
+                def.push('<tr><td><b>Allow child elements to bubble</b></td><td>'+r.bubbleFireIfParent+isDefault+'</td></tr>');
+            }
+            if(r.bubbleFireIfChildFired!=null){
+                var isDefault=r.bubbleFireIfChildFired ? ' (default)':'';
+                def.push('<tr><td><b>Do not allow if child element already triggers</b></td><td>'+!r.bubbleFireIfChildFired+isDefault+'</td></tr>');
+            }
+            if(r.bubbleStop!=null){
+                var isDefault=!r.bubbleStop ? ' (default)':'';
+                def.push('<tr><td><b>Do not allow to bubble to parents</b></td><td>'+r.bubbleStop+isDefault+'</td></tr>');
+            }
             if(r.trigger){
               _satellite.each(r.trigger, function(t){
                 if(t.engine){
