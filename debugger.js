@@ -5,6 +5,7 @@ document.write('<html><head><title>Disruptive Advertising - Adobe DTM Debugger</
                +'<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>'
                +'<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>'
                +'<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>'
+                 +'<script src="https://cdn.rawgit.com/beautify-web/js-beautify/master/js/lib/beautify.js"></script>'
                +'</head><body>'
                +'<div id="main">'
                +'<a href=\"http://www.disruptiveadvertising.com\" target=\"_blank\" style=\"float:left; margin-left: 15px; margin-top: 12px; padding: 0;\">Disruptive Advertising</a>'
@@ -19,7 +20,7 @@ document.write('<html><head><title>Disruptive Advertising - Adobe DTM Debugger</
                +'</div>'
                +'<div class="modal fade" id="modal">'
                +'<div class="modal-dialog">'
-               +'<div class="modal-content">'
+               +'<div class="modal-content" style="overflow:auto">'
                +'<div class="modal-header">'
                +'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
                +'<h4 class="modal-title"></h4>'
@@ -288,6 +289,12 @@ window._dtmDebug = {
             if(r.selector){
               def.push('<tr><td><b>CSS Selector</b></td><td>'+r.selector+'</td></tr>');
             }
+            if(r.scope){
+              def.push('<tr><td><b>Condition</b></td><td>'+JSON.stringify(r.scope)+'</td></tr>');
+            }
+            if(r.conditions){
+              def.push('<tr><td><b>Condition</b></td><td><pre class="prettyprint"><code class="language-js">'+js_beautify(r.conditions.toString())+'</code></pre></td></tr>');
+            }
             if(r.trigger){
               _satellite.each(r.trigger, function(t){
                 if(t.engine){
@@ -306,7 +313,7 @@ window._dtmDebug = {
                       def.push('<tr><td style="padding-left: 20px;">events</td><td>'+(t.arguments.join(',')));
                     }
                     if(t.command == 'customSetup'){
-                      def.push('<tr><td style="padding-left: 20px;">Custom Code</td><td><pre class="prettyprint"><code class="language-js">'+t.arguments[0].toString()+'</code></pre></td></tr>');
+                      def.push('<tr><td style="padding-left: 20px;">Custom Code</td><td><pre class="prettyprint"><code class="language-js">'+js_beautify(t.arguments[0].toString())+'</code></pre></td></tr>');
                     }
                     if(t.command == 'trackLink'){
                       var cl = {
@@ -328,6 +335,21 @@ window._dtmDebug = {
                       }
                     }
                   }
+                }else if(t.command){
+                     def.push('<tr><td colspan="2"><b>'+t.command +'</b></td></tr>');
+                     if(t.arguments){
+                       _satellite.each(t.arguments, function(arg){
+                        for(var a in arg){
+                            if(a=='scripts'){
+                                def.push('<tr><td style="padding-left: 20px;">' + a + '</td>');
+                                 _satellite.each(arg[a], function(scripts){
+                                    def.push('<td><a href="http://assets.adobedtm.com/'+_satellite.settings.scriptDir+scripts.src +'" target="_blank">'+JSON.stringify(scripts.src)+'</a ></td ></tr >');
+                                 });
+                            } else def.push('<tr><td style="padding-left: 20px;">'+a+'</td><td>'+arg[a]+'</td></tr>');
+                        }
+                         
+                      });
+                     }
                 }
               });
             }
@@ -349,7 +371,7 @@ window._dtmDebug = {
         $m.find('.modal-title').html('Definition for data element "<b>'+name+'"</b>');
         if(type == 'customJS'){
           def.push('<tr><td><b>Type</b></td><td>Custom JS</td></tr>');
-          def.push('<tr><td><b>Definition</b></td><td><pre class="prettyprint"><code class="language-js">'+de.customJS.toString()+'</code></pre></td></tr>');
+          def.push('<tr><td><b>Definition</b></td><td><pre class="prettyprint"><code class="language-js">'+js_beautify(de.customJS.toString())+'</code></pre></td></tr>');
         }
         if(type == 'selector'){
           def.push('<tr><td><b>Type</b></td><td>CSS Selector</td></tr>');
