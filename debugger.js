@@ -36,6 +36,28 @@ document.write('<html><head><title>Disruptive Advertising - Adobe DTM Debugger</
                +'</div>'
                +'</body></html>');
 window._dtmDebug = {
+  tool:{
+    inputPayload: function(e){
+      var strHtml=[]
+      strHtml.push('<textarea rows="4" cols="50" id="inputTxt" placeholder="Put the payload you want to split here."></textarea><br/>');
+      strHtml.push('<button onclick=\"window._dtmDebug.tool.parsePayload()\">Split payload</button><br/>');
+      strHtml.push('<pre class="prettyprint" id="outputTxt" placeholder="output text"></pre>');
+      
+      $('#modal').find('.modal-body p').html('<table class="table">'+strHtml.join('')+'</table>');
+      $('#modal').modal('show');
+
+    },
+    parsePayload: function(str){
+      str=document.getElementById("inputTxt").value;
+      str=str.trim();
+      outputTxt=[];
+       str.split("&").forEach(function(para) {
+          outputTxt.push(para+"<br/>");
+	        console.log(para);
+	    }, this);
+      document.getElementById("outputTxt").innerHTML=outputTxt.join('');
+    }
+  },
   rules : [
     {
       id: "pageLoadRules",
@@ -209,6 +231,9 @@ window._dtmDebug = {
       /* COLUMN 2 */
       html.push('<div class="col-xs-6" id="column2">');
 
+      //tool kits
+      html.push('<h2>Tool Kits</h2>');
+      html.push('<button onclick=\"window._dtmDebug.tool.inputPayload()\">Split payload</button>');
       // data elements
       html.push('<h1>Data Elements</h1>');
       html.push('<table id="data-elements" class="table table-striped"><thead><tr><th>Name</th><th>Type</th><th>Value</th></tr></thead><tbody>');
