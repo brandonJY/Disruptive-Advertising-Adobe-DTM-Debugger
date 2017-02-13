@@ -346,20 +346,22 @@ window._dtmDebug = {
                           def.push('<tr><td style="padding-left: 20px;">'+a+'</td><td>'+arg[a]+'</td></tr>');
                       });
                     }
-                    if(t.command == 'addEvent'){
+                    else if(t.command == 'addEvent'){
                       def.push('<tr><td style="padding-left: 20px;">events</td><td>'+(t.arguments.join(',')));
                     }
-                    if(t.command == 'customSetup'){
+                    else if(t.command == 'customSetup'){
                       def.push('<tr><td style="padding-left: 20px;">Custom Code</td><td><pre class="prettyprint"><code class="language-js">'+js_beautify(t.arguments[0].toString())+'</code></pre></td></tr>');
                     }
-                    if(t.command == 'trackLink'){
+                    else if(t.command == 'trackLink'||t.command == 'trackPageView'){
                       var cl = {
                         'o':'Custom Link',
                         'd':'File Download',
                         'e':'Exit Link'
                       };
-                      def.push('<tr><td style="padding-left: 20px;">Hit Type</td><td>'+cl[t.arguments[0].type]+'</td></tr>');
-                      def.push('<tr><td style="padding-left: 20px;">Link Name</td><td>'+t.arguments[0].linkName+'</td></tr>');
+                      if(t.command == 'trackLink'){
+                        def.push('<tr><td style="padding-left: 20px;">Hit Type</td><td>'+cl[t.arguments[0].type]+'</td></tr>');
+                        def.push('<tr><td style="padding-left: 20px;">Link Name</td><td>'+t.arguments[0].linkName+'</td></tr>');
+                      }
                       if(_satellite.isObject(t.arguments[0].setVars)){
                         for(var a in t.arguments[0].setVars)
                           def.push('<tr><td style="padding-left: 20px;">'+a+'</td><td>'+t.arguments[0].setVars[a]+'</td></tr>');
@@ -379,7 +381,8 @@ window._dtmDebug = {
                         for(var a in arg){
                             if(a=='scripts'){
                                 def.push('<tr><td style="padding-left: 20px;">' + a + '</td>');
-                                 _satellite.each(arg[a], function(scripts){
+                                 _satellite.each(arg[a], function(scripts,i){
+                                   if(i>0) def.push('<td></td>');
                                     def.push('<td><a href="http://assets.adobedtm.com/'+_satellite.settings.scriptDir+scripts.src +'" target="_blank">'+JSON.stringify(scripts.src)+'</a ></td ></tr >');
                                  });
                             } else def.push('<tr><td style="padding-left: 20px;">'+a+'</td><td>'+arg[a]+'</td></tr>');
