@@ -331,7 +331,12 @@ window._dtmDebug = {
       for(var tools in _satellite.tools){
         var tool = _satellite.tools[tools];
         var version='';
-        if(tool.settings.engine=='sc'&&window.opener.s) version="="+window.opener.s.version;
+        if(tool.settings.engine=='sc'&&window.opener.s) {
+          version="="+window.opener.s.version;
+          version+="<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#adadad'>Report Suite="+window.opener.s.account+"</span>";
+          if(window.opener.s.trackingServer)
+            version+="<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#adadad'>Tracking Server="+window.opener.s.trackingServer+"</span>";
+        }
         if(tool.settings.engine=='visitor_id'&&window.opener.Visitor) version="="+window.opener.Visitor.version;
         if(tool && tools != 'default')
           html.push('<p data-toolid="'+tools+'">'+toolNames[tool.settings.engine]+version+'</p>');
