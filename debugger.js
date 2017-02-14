@@ -35,7 +35,7 @@ document.write('<html><head><title>Disruptive Advertising - Adobe DTM Debugger</
                +'</div>'
                +'</div>'
                +'</body></html>');
-//origin: http://assets.adobedtm.com/d00638433326249dc42ea6fc89a4f65bfba18066/scripts/satellite-55fae9a2666337593b0005c2.js              
+//origin: http://assets.adobedtm.com/d00638433326249dc42ea6fc89a4f65bfba18066/scripts/satellite-55fae9a2666337593b0005c2.js
 window._dtmDebug = {
   tool:{
     inputPayload: function(e){
@@ -95,7 +95,7 @@ window._dtmDebug = {
          var displayElemId='modal-additional';
           
          var _satellite = window.opener._satellite,
-            $m = $('#modal').clone().attr('id', displayElemId),
+           $m = $('#' + displayElemId).length > 0 ? $('#' + displayElemId) : $('#modal').clone().attr('id', displayElemId),
             def = [],
             name = $(obj).text().replace(/%/g,''),
             de = _satellite.dataElements[name],
@@ -374,7 +374,9 @@ window._dtmDebug = {
         _dtmDebug.saved.reverse = $(this).is(':checked');
         _dtmDebug.getNotifications();
       });
-
+      jQuery(document).on('hidden.bs.modal', '.modal', function () {
+        $('.modal:visible').length && $(document.body).addClass('modal-open');
+      }); 
       jQuery('#rules tbody .rule').on('click', function(){
         var _satellite = window.opener._satellite,
           $m = $('#modal'),
