@@ -322,11 +322,12 @@ window._dtmDebug = {
       var toolNames = {
         "tnt": "Test & Target",
         "sc": "Adobe Analytics",
-        "visitor_id": "Visitor ID",
+        "visitor_id": "Marketing Cloud ID",
         "ga_universal": "Google Analytics Universal",
         "adlens": "Adobe Adlens",
         "am": "Adobe Audience Manager",
-        "ga": "Google Analytics Classic"
+        "ga": "Google Analytics Classic",
+        "aem": "AEM ContextHub"
       };
       for(var tools in _satellite.tools){
         var tool = _satellite.tools[tools];
