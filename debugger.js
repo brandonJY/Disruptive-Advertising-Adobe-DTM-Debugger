@@ -1,6 +1,6 @@
-document.write('<html><head><title>Disruptive Advertising - Adobe DTM Debugger</title>'
+document.write('<html><head><title>Adobe DTM Debugger - BJM</title>'
                +'<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">'
-               +'<style type="text/css">td.de-type{cursor:pointer;text-decoration:underline}table tbody td,table thead th{padding-right:20px}body{margin:0}*{font-family:Arial,Helvetica,sans-serif}table{border:0;margin:10px 0}table thead th{text-align:left}table.info{margin:10px 0 0}table.info td{font-size:12px;color:#adadad}h1{margin-left:10px}#dtm-content{padding:10px}#main{background:#252525;width:100%;height:75px}#notifications,code.language-js{white-space:-moz-pre-wrap!important;word-wrap:break-word;word-break:break-all}#data-elements .de-type,span[data-de]{text-decoration:underline}span[data-de]:hover{cursor:pointer}table td{vertical-align:top}#column1,#column2{height:100%;overflow-y:scroll}tr[data-fired=yes] td.fired{color:green} #data-elements .de-type {cursor: pointer;} #rules td.rule {text-decoration: underline; cursor: pointer;}</style>'
+               +'<style type="text/css">td.de-type{cursor:pointer;text-decoration:underline}table tbody td,table thead th{padding-right:20px}body{margin:0}*{font-family:Arial,Helvetica,sans-serif}table{border:0;margin:10px 0}table thead th{text-align:left}table.info{margin:10px 0 0}table.info td{font-size:12px;color:#adadad}h1{margin-left:10px}h2{font-size: 25px}#dtm-content{padding:10px}#main{background:#252525;width:100%;height:60px}#notifications,code.language-js{white-space:-moz-pre-wrap!important;word-wrap:break-word;word-break:break-all}#data-elements .de-type,span[data-de]{text-decoration:underline}span[data-de]:hover{cursor:pointer}table td{vertical-align:top}#column1,#column2{height:100%;overflow-y:scroll}tr[data-fired=yes] td.fired{color:green} #data-elements .de-type {cursor: pointer;} #rules td.rule {text-decoration: underline; cursor: pointer;}</style>'
                +'<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>'
                +'<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>'
                +'<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>'
@@ -8,13 +8,12 @@ document.write('<html><head><title>Disruptive Advertising - Adobe DTM Debugger</
                  +'<script src="https://cdn.rawgit.com/beautify-web/js-beautify/master/js/lib/beautify.js"></script>'
                +'</head><body>'
                +'<div id="main">'
-               +'<a href=\"http://www.disruptiveadvertising.com\" target=\"_blank\" style=\"float:left; margin-left: 15px; margin-top: 12px; padding: 0;\">Disruptive Advertising</a>'
-               +'<h1 style=\"float:right; margin: 0 20px 0 0; height:75px; line-height: 75px; padding: 0; color:#fff;\">DTM Debugger</h1>'
+               +'<h2 style=\"float:right; margin: 0 20px 0 0; height:60px; line-height: 60px; padding: 0; color:#fff;\">DTM Debugger</h2>'
                +'</div>'
                +'<div style=\"clear:both;\"></div>'
                +'<div id="dtm-content">'
                +'<div id=\"dtm-info\"></div>'
-               +'<hr><div style="color: #adadad">Report any bugs or issues <a href="mailto:technology@disruptiveadvertising.com?subject=DTM%20Debugger%20Issue&body=Website:%20'+window.opener.location.href+'%0D%0ADetails:%0D%0A">to Disruptive Advertising</a></div>'
+               +'<br/><br/><hr>'
                +'<div style="color: #adadad">Report issues <a href="https://github.com/brandonJY/Disruptive-Advertising-Adobe-DTM-Debugger/issues">to Brandon</a></div>'
                +'<script type="text/javascript">_dtmDebug.init();<\/script>'
                +'</div>'
@@ -60,33 +59,34 @@ window._dtmDebug = {
     },
     parseDataElement:function(_satellite,a,arg_a){
        var displayTxt='<td>'+arg_a+'</td>';
-       if(arg_a.indexOf('%')==0){
+       if(arg_a&&arg_a.indexOf('%')==0){
           var dName=arg_a.replace(/%/g,'');
           var de = _satellite.dataElements[dName],
                 type = '',
                 deType = '';
-          if(!de) return '';
-            if(typeof de.customJS != "undefined"){
-              type = "Custom JS";
-              deType = "customJS";
-            }
-            if(typeof de.selector != "undefined"){
-              type = "CSS Selector";
-              deType = "selector";
-            }
-            if(typeof de.jsVariable != "undefined"){
-              type = "JS Variable";
-              deType = "jsVariable";
-            }
-            if(typeof de.cookie != "undefined"){
-              type = "Cookie";
-              deType = "cookie";
-            }
-            if(typeof de.queryParam != "undefined"){
-              type = "Query Parameter";
-              deType = "queryParam";
-            }
-            displayTxt= '<td class="de-type" data-type="'+deType+'" onclick="window._dtmDebug.tool.dataElementClick(this)">%'+dName+'%</td><td class="de-value">'+_dtmDebug.getDataElementValue(dName)+'</td>';
+          if(de){
+              if(typeof de.customJS != "undefined"){
+                type = "Custom JS";
+                deType = "customJS";
+              }
+              if(typeof de.selector != "undefined"){
+                type = "CSS Selector";
+                deType = "selector";
+              }
+              if(typeof de.jsVariable != "undefined"){
+                type = "JS Variable";
+                deType = "jsVariable";
+              }
+              if(typeof de.cookie != "undefined"){
+                type = "Cookie";
+                deType = "cookie";
+              }
+              if(typeof de.queryParam != "undefined"){
+                type = "Query Parameter";
+                deType = "queryParam";
+              }
+              displayTxt= '<td class="de-type" data-type="'+deType+'" onclick="window._dtmDebug.tool.dataElementClick(this)">%'+dName+'%</td><td class="de-value">'+_dtmDebug.getDataElementValue(dName)+'</td>';
+          }
        }
        if(displayTxt.length==0) displayTxt='<td>'+arg_a+'</td>';
        return '<tr><td style="padding-left: 20px;">'+a+'</td>'+displayTxt+'</tr>';
@@ -280,12 +280,13 @@ window._dtmDebug = {
       _dtmDebug._loading = false;
       _dtmDebug.saved.url = window.opener.location.href;
 
+      /* COLUMN 1 */
+      html.push('<div class="col-xs-6" id="column1">');
+
       html.push('<table class="info">'+this.getSettings(_satellite,true)+'</table>');
       html.push('<div class="clearfix"></div>');
 
-      /* COLUMN 1 */
-      html.push('<div class="col-xs-6" id="column1"><h1>Rules</h1>');
-      html.push('<div><input type="checkbox" id="show-fired"'+(_dtmDebug.saved.showFired == true ? ' checked="checked"' : '')+'> <label for="show-fired">Only show fired rules</label></div>');
+      html.push('<h2>Rules</h2><div><input type="checkbox" id="show-fired"'+(_dtmDebug.saved.showFired == true ? ' checked="checked"' : '')+'> <label for="show-fired">Only show fired rules</label></div>');
       html.push('<table id="rules" class="table table-striped"><thead><tr><th>Rule Name</th><th>Rule Type</th><th>Fired?</th><th>Other Info</th></tr></thead><tbody>');
       _satellite.each(rules, function(rule){
         var rls = _satellite.configurationSettings[rule.id];
@@ -312,8 +313,33 @@ window._dtmDebug = {
       //tool kits
       html.push('<h2>Tool Kits</h2>');
       html.push('<button onclick=\"window._dtmDebug.tool.inputPayload()\">Split payload</button>');
+      
+      //configuration tool settings
+      html.push("<h2>Configuration</h2>");
+      html.push('<table class="table table-striped">');
+      //<tr><td><strong>Environment:</strong></td><td>'+(_satellite.settings.isStaging == true ? "Staging" : "Production")+'</td></tr>
+      html.push("<tr><td><strong>Installed Tools:</strong></td><td>");
+      var toolNames = {
+        "tnt": "Test & Target",
+        "sc": "Adobe Analytics",
+        "visitor_id": "Visitor ID",
+        "ga_universal": "Google Analytics Universal",
+        "adlens": "Adobe Adlens",
+        "am": "Adobe Audience Manager",
+        "ga": "Google Analytics Classic"
+      };
+      for(var tools in _satellite.tools){
+        var tool = _satellite.tools[tools];
+        var version='';
+        if(tool.settings.engine=='sc'&&window.opener.s) version="="+window.opener.s.version;
+        if(tool.settings.engine=='visitor_id'&&window.opener.Visitor) version="="+window.opener.Visitor.version;
+        if(tool && tools != 'default')
+          html.push('<p data-toolid="'+tools+'">'+toolNames[tool.settings.engine]+version+'</p>');
+      }
+      html.push("</td></tr>");
+      html.push("</table>");
       // data elements
-      html.push('<h1>Data Elements</h1>');
+      html.push('<h2>Data Elements</h2>');
       html.push('<table id="data-elements" class="table table-striped"><thead><tr><th>Name</th><th>Type</th><th>Value</th></tr></thead><tbody>');
 
       for(var dName in _satellite.dataElements){
@@ -345,28 +371,8 @@ window._dtmDebug = {
       html.push('</tbody></table>');
 
       // notifications
-      html.push('<h1>DTM Notifications</h1><div><label><input type="checkbox" id="custom-notifications"'+(_dtmDebug.saved.onlyCustom == true ? ' checked="checked"' : '')+'> Only show custom notifications</label> <label><input type="checkbox" id="custom-reverse-order"'+(_dtmDebug.saved.reverse == true ? ' checked="checked"' : '')+'> Show newest notifications on top</label></div><div class="panel panel-default"><div class="panel-body" id="notifications">');
+      html.push('<h2>DTM Notifications</h2><div><label><input type="checkbox" id="custom-notifications"'+(_dtmDebug.saved.onlyCustom == true ? ' checked="checked"' : '')+'> Only show custom notifications</label> <label><input type="checkbox" id="custom-reverse-order"'+(_dtmDebug.saved.reverse == true ? ' checked="checked"' : '')+'> Show newest notifications on top</label></div><div class="panel panel-default"><div class="panel-body" id="notifications">');
       html.push('</div></div>');
-
-      html.push("<h1>Configuration</h1>");
-      html.push('<table class="table table-striped"><tr><td><strong>Environment:</strong></td><td>'+(_satellite.settings.isStaging == true ? "Staging" : "Production")+'</td></tr>');
-      html.push("<tr><td><strong>Installed Tools:</strong></td><td>");
-      var toolNames = {
-        "tnt": "Test & Target",
-        "sc": "Adobe Analytics",
-        "visitor_id": "Visitor ID",
-        "ga_universal": "Google Analytics Universal",
-        "adlens": "Adobe Adlens",
-        "am": "Adobe Audience Manager",
-        "ga": "Google Analytics Classic"
-      };
-      for(var tools in _satellite.tools){
-        var tool = _satellite.tools[tools];
-        if(tool && tools != 'default')
-          html.push('<p data-toolid="'+tools+'">'+toolNames[tool.settings.engine]+'</p>');
-      }
-      html.push("</td></tr>");
-      html.push("</table>");
 
 
       jQuery('#dtm-info').html(html.join(""));
