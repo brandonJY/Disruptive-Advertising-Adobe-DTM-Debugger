@@ -1,6 +1,6 @@
 document.write('<html><head><title>Disruptive Advertising - Adobe DTM Debugger</title>'
                +'<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">'
-               +'<style type="text/css">table tbody td,table thead th{padding-right:20px}body{margin:0}*{font-family:Arial,Helvetica,sans-serif}table{border:0;margin:10px 0}table thead th{text-align:left}table.info{margin:10px 0 0}table.info td{font-size:12px;color:#adadad}h1{margin-left:10px}#dtm-content{padding:10px}#main{background:#252525;width:100%;height:75px}#notifications,code.language-js{white-space:-moz-pre-wrap!important;word-wrap:break-word;word-break:break-all}#data-elements .de-type,span[data-de]{text-decoration:underline}span[data-de]:hover{cursor:pointer}table td{vertical-align:top}#column1,#column2{height:100%;overflow-y:scroll}tr[data-fired=yes] td.fired{color:green} #data-elements .de-type {cursor: pointer;} #rules td.rule {text-decoration: underline; cursor: pointer;}</style>'
+               +'<style type="text/css">td.de-type{cursor:pointer;text-decoration:underline}table tbody td,table thead th{padding-right:20px}body{margin:0}*{font-family:Arial,Helvetica,sans-serif}table{border:0;margin:10px 0}table thead th{text-align:left}table.info{margin:10px 0 0}table.info td{font-size:12px;color:#adadad}h1{margin-left:10px}#dtm-content{padding:10px}#main{background:#252525;width:100%;height:75px}#notifications,code.language-js{white-space:-moz-pre-wrap!important;word-wrap:break-word;word-break:break-all}#data-elements .de-type,span[data-de]{text-decoration:underline}span[data-de]:hover{cursor:pointer}table td{vertical-align:top}#column1,#column2{height:100%;overflow-y:scroll}tr[data-fired=yes] td.fired{color:green} #data-elements .de-type {cursor: pointer;} #rules td.rule {text-decoration: underline; cursor: pointer;}</style>'
                +'<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>'
                +'<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>'
                +'<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>'
@@ -35,6 +35,7 @@ document.write('<html><head><title>Disruptive Advertising - Adobe DTM Debugger</
                +'</div>'
                +'</div>'
                +'</body></html>');
+//origin: http://assets.adobedtm.com/d00638433326249dc42ea6fc89a4f65bfba18066/scripts/satellite-55fae9a2666337593b0005c2.js              
 window._dtmDebug = {
   tool:{
     inputPayload: function(e){
@@ -56,7 +57,84 @@ window._dtmDebug = {
 	        console.log(para);
 	    }, this);
       document.getElementById("outputTxt").innerHTML=outputTxt.join('');
-    }
+    },
+    parseDataElement:function(_satellite,a,arg_a){
+       var displayTxt='<td>'+arg_a+'</td>';
+       if(arg_a.indexOf('%')==0){
+          var dName=arg_a.replace(/%/g,'');
+          var de = _satellite.dataElements[dName],
+                type = '',
+                deType = '';
+          if(!de) return '';
+            if(typeof de.customJS != "undefined"){
+              type = "Custom JS";
+              deType = "customJS";
+            }
+            if(typeof de.selector != "undefined"){
+              type = "CSS Selector";
+              deType = "selector";
+            }
+            if(typeof de.jsVariable != "undefined"){
+              type = "JS Variable";
+              deType = "jsVariable";
+            }
+            if(typeof de.cookie != "undefined"){
+              type = "Cookie";
+              deType = "cookie";
+            }
+            if(typeof de.queryParam != "undefined"){
+              type = "Query Parameter";
+              deType = "queryParam";
+            }
+            displayTxt= '<td class="de-type" data-type="'+deType+'" onclick="window._dtmDebug.tool.dataElementClick(this)">%'+dName+'%</td><td class="de-value">'+_dtmDebug.getDataElementValue(dName)+'</td>';
+       }
+       if(displayTxt.length==0) displayTxt='<td>'+arg_a+'</td>';
+       return '<tr><td style="padding-left: 20px;">'+a+'</td>'+displayTxt+'</tr>';
+    },
+    dataElementClick:function(obj){
+         var displayElemId='modal-additional';
+          
+         var _satellite = window.opener._satellite,
+            $m = $('#modal').clone().attr('id', displayElemId),
+            def = [],
+            name = $(obj).text().replace(/%/g,''),
+            de = _satellite.dataElements[name],
+            type = $(obj).attr('data-type');
+        $m.find('.modal-title').html('Definition for data element "<b>'+name+'"</b>');
+        if(type == 'customJS'){
+          def.push('<tr><td><b>Type</b></td><td>Custom JS</td></tr>');
+          def.push('<tr><td><b>Definition</b></td><td><pre class="prettyprint"><code class="language-js">'+js_beautify(de.customJS.toString())+'</code></pre></td></tr>');
+        }
+        if(type == 'selector'){
+          def.push('<tr><td><b>Type</b></td><td>CSS Selector</td></tr>');
+          def.push('<tr><td><b>Definition</b></td><td>'+de.selector+'</td></tr>');
+          def.push('<tr><td><b>Element Property</b></td><td>'+de.property+'</td></tr>');
+        }
+        if(type == 'queryParam'){
+          def.push('<tr><td><b>Type</b></td><td>Query Parameter</td></tr>');
+          def.push('<tr><td><b>Definition</b></td><td>'+de.queryParam+'</td></tr>');
+          def.push('<tr><td><b>Case Sensitive?</b></td><td>'+(de.ignoreCase ? 'Yes' : 'No')+'</td></tr>');
+        }
+        if(type == 'jsVariable'){
+          def.push('<tr><td><b>Type</b></td><td>JavaScript Variable</td></tr>');
+          def.push('<tr><td><b>Definition</b></td><td>'+de.jsVariable+'</td></tr>');
+        }
+        if(type == 'cookie'){
+          def.push('<tr><td><b>Type</b></td><td>Cookie</td></tr>');
+          def.push('<tr><td><b>Definition</b></td><td>'+de.cookie+'</td></tr>');
+        }
+        if(de.default){
+          def.push('<tr><td><b>Default Value</b></td><td>'+de.default+'</td></tr>');
+        }
+        def.push('<tr><td><b>Force Lowercase?</b></td><td>'+(de.forceLowerCase ? 'Yes' : 'No')+'</td></tr>');
+        if(de.storeLength){
+          def.push('<tr><td><b>Store Length</b></td><td>'+de.storeLength+'</td></tr>');
+        }
+        $m.find('.modal-body p').html('<table class="table">'+def.join('')+'</table>');
+        PR.prettyPrint();
+        document.body.append($m[0]);
+        $('#'+displayElemId).modal('show');
+      }
   },
   rules : [
     {
@@ -343,7 +421,7 @@ window._dtmDebug = {
                     if(t.command == 'setVars'){
                       _satellite.each(t.arguments, function(arg){
                         for(var a in arg)
-                          def.push('<tr><td style="padding-left: 20px;">'+a+'</td><td>'+arg[a]+'</td></tr>');
+                          def.push(window._dtmDebug.tool.parseDataElement(_satellite,a,arg[a]));
                       });
                     }
                     else if(t.command == 'addEvent'){
@@ -364,7 +442,7 @@ window._dtmDebug = {
                       }
                       if(_satellite.isObject(t.arguments[0].setVars)){
                         for(var a in t.arguments[0].setVars)
-                          def.push('<tr><td style="padding-left: 20px;">'+a+'</td><td>'+t.arguments[0].setVars[a]+'</td></tr>');
+                          def.push(window._dtmDebug.tool.parseDataElement(_satellite,a,t.arguments[0].setVars[a]));
                       }
                       if(t.arguments[0].addEvent){
                         def.push('<tr><td style="padding-left: 20px;">events</td><td>'+(t.arguments[0].addEvent.join(',')));
