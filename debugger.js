@@ -334,7 +334,8 @@ window._dtmDebug = {
         var version='';
         if(tool.settings.engine=='sc'&&window.opener.s) {
           version="="+window.opener.s.version;
-          version+="<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#adadad'>Report Suite="+window.opener.s.account+"</span>";
+          var reportSuite=window.opener.s.account||window.opener.s.un;
+          version+="<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#adadad'>Report Suite="+reportSuite+"</span>";
           if(window.opener.s.trackingServer)
             version+="<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#adadad'>Tracking Server="+window.opener.s.trackingServer+"</span>";
         }
