@@ -16,6 +16,7 @@ document.write('<html><head><title>Adobe DTM Debugger - BJM</title>'
                +'<br/><br/><hr>'
                +'<div style="color: #adadad">Report issues <a href="https://github.com/brandonJY/Disruptive-Advertising-Adobe-DTM-Debugger/issues">to Brandon</a></div>'
                +'<script type="text/javascript">_dtmDebug.init();<\/script>'
+               +'<script src="tools.js"></script>'
                +'</div>'
                +'<div class="modal fade" id="modal">'
                +'<div class="modal-dialog">'
@@ -35,6 +36,9 @@ document.write('<html><head><title>Adobe DTM Debugger - BJM</title>'
                +'</div>'
                +'</body></html>');
 //origin: http://assets.adobedtm.com/d00638433326249dc42ea6fc89a4f65bfba18066/scripts/satellite-55fae9a2666337593b0005c2.js
+var toolKitHTML = '<h2>Tool Kits</h2>'
+    + '<button onclick=\"window._dtmDebug.tool.inputPayload(window._dtmDebug.tool.parsePayload)\">Split payload</button>'
+    + '&nbsp;<button onclick=\"genericTools.inputPopUp(\'globalSearch\')\">Global Search variable value</button>';
 window._dtmDebug = {
   tool:{
     inputPayload: function(e){
@@ -53,7 +57,7 @@ window._dtmDebug = {
       outputTxt=[];
        str.split("&").forEach(function(para) {
           outputTxt.push(para+"<br/>");
-	        console.log(para);
+	        //console.log(para);
 	    }, this);
       document.getElementById("outputTxt").innerHTML=outputTxt.join('');
     },
@@ -311,8 +315,7 @@ window._dtmDebug = {
       html.push('<div class="col-xs-6" id="column2">');
 
       //tool kits
-      html.push('<h2>Tool Kits</h2>');
-      html.push('<button onclick=\"window._dtmDebug.tool.inputPayload()\">Split payload</button>');
+      html.push(toolKitHTML);
       
       //configuration tool settings
       html.push("<h2>Configuration</h2>");
@@ -542,7 +545,7 @@ window._dtmDebug = {
       _dtmDebug._loading = true;
     }
     else {
-      jQuery('#dtm-info').html('<div class="text-center"><h1>DTM is not installed on this page!</h1><br><img src="//www.disruptiveadvertising.com/wp-content/uploads/2015/09/run-dtm.jpg"></div>');
+      jQuery('#dtm-info').html('<div class="text-center"><h1>DTM is not installed on this page!</h1><br></div>'+toolKitHTML);
     }
 
     $('#show-fired').on('click', function(){
