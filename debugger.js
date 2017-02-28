@@ -37,30 +37,10 @@ document.write('<html><head><title>Adobe DTM Debugger - BJM</title>'
                +'</body></html>');
 //origin: http://assets.adobedtm.com/d00638433326249dc42ea6fc89a4f65bfba18066/scripts/satellite-55fae9a2666337593b0005c2.js
 var toolKitHTML = '<h2>Tool Kits</h2>'
-    + '<button onclick=\"window._dtmDebug.tool.inputPayload(window._dtmDebug.tool.parsePayload)\">Split payload</button>'
+    + '<button onclick=\"genericTools.inputPopUp(\'splitPayload\')\">Split payload</button>'
     + '&nbsp;<button onclick=\"genericTools.inputPopUp(\'globalSearch\')\">Global Search variable value</button>';
 window._dtmDebug = {
   tool:{
-    inputPayload: function(e){
-      var strHtml=[]
-      strHtml.push('<textarea rows="4" cols="50" id="inputTxt" placeholder="Put the payload you want to split here."></textarea><br/>');
-      strHtml.push('<button onclick=\"window._dtmDebug.tool.parsePayload()\">Split payload</button><br/>');
-      strHtml.push('<pre class="prettyprint" id="outputTxt" placeholder="output text"></pre>');
-      
-      $('#modal').find('.modal-body p').html('<table class="table">'+strHtml.join('')+'</table>');
-      $('#modal').modal('show');
-
-    },
-    parsePayload: function(str){
-      str=document.getElementById("inputTxt").value;
-      str=str.trim();
-      outputTxt=[];
-       str.split("&").forEach(function(para) {
-          outputTxt.push(para+"<br/>");
-	        //console.log(para);
-	    }, this);
-      document.getElementById("outputTxt").innerHTML=outputTxt.join('');
-    },
     parseDataElement:function(_satellite,a,arg_a){
        var displayTxt='<td>'+arg_a+'</td>';
        if(arg_a&&arg_a.indexOf('%')==0){
