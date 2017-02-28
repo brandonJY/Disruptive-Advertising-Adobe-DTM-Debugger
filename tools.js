@@ -78,43 +78,47 @@ var genericTools = {
                 output.log('','info',true); //clean the output field
                 var count = 0;
                 var isContinue = "yes";
-                while (stack.length > 0 && isContinue == "yes") {
-                    count++;
-                    if (count % searchBatch == 0) {
-                        output.log("Searched:" + searched);
-                        searched = [];
-                        isContinue = prompt("continue?", "yes");
-                    }
+                try{
+                    while (stack.length > 0 && isContinue == "yes") {
+                        count++;
+                        if (count % searchBatch == 0) {
+                            output.log("Searched:" + searched);
+                            searched = [];
+                            isContinue = prompt("continue?", "yes");
+                        }
 
-                    var fromStack = stack.shift();
-                    var obj = fromStack[0];
-                    var address = fromStack[1];
-                    // console.log(address);
-                    if (typeof obj == typeof value && obj.indexOf(value) >= 0) { //if contains value or equal
-                        found.push(address);
-                        output.log("found now=" + found, 'debug');
-                        if (breakOnFirstFound)
-                            break;
-                    } else if (typeof obj == "object") { //&& searched.indexOf(obj) == -1
-                        if (isArray(obj)) {
-                            var prefix = '[';
-                            var postfix = ']';
-                        } else {
-                            var prefix = '.';
-                            var postfix = '';
-                        }
-                        for (i in obj) {
-                            if (typeof obj == typeof value && obj == value) {
-                                var found = address;
+                        var fromStack = stack.shift();
+                        var obj = fromStack[0];
+                        var address = fromStack[1];
+                        // console.log(address);
+                        if (typeof obj == typeof value && obj.indexOf(value) >= 0) { //if contains value or equal
+                            found.push(address);
+                            output.log("found now=" + found, 'debug');
+                            if (breakOnFirstFound)
                                 break;
+                        } else if (typeof obj == "object") { //&& searched.indexOf(obj) == -1
+                            if (isArray(obj)) {
+                                var prefix = '[';
+                                var postfix = ']';
+                            } else {
+                                var prefix = '.';
+                                var postfix = '';
                             }
-                            stack.push([obj[i], address + prefix + i + postfix]);
+                            for (i in obj) {
+                                if (typeof obj == typeof value && obj == value) {
+                                    var found = address;
+                                    break;
+                                }
+                                stack.push([obj[i], address + prefix + i + postfix]);
+                            }
                         }
+                        searched.push(address);
                     }
-                    searched.push(address);
+                }catch(err){
+                    output.log(err,'debug');
                 }
                 output.log("Searched:" + searched);
-                output.log("found now=" + found);
+                output.log("found=" + found);
                 return found;
             }
         }
