@@ -1,3 +1,13 @@
+var currentScriptPath = function () {
+
+    var scripts = document.querySelectorAll( 'script[src]' );
+    var currentScript = scripts[ scripts.length - 1 ].src;
+    var currentScriptChunks = currentScript.split( '/' );
+    var currentScriptFile = currentScriptChunks[ currentScriptChunks.length - 1 ];
+
+    return currentScript.substring(0,currentScript.lastIndexOf(currentScriptFile));
+}
+
 document.write('<html><head><title>Adobe DTM Debugger - BJM</title>'
                +'<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">'
                +'<style type="text/css">td.de-type{cursor:pointer;text-decoration:underline}table tbody td,table thead th{padding-right:20px}body{margin:0}*{font-family:Arial,Helvetica,sans-serif}table{border:0;margin:10px 0}table thead th{text-align:left}table.info{margin:10px 0 0}table.info td{font-size:12px;color:#adadad}h1{margin-left:10px}h2{font-size: 25px}#dtm-content{padding:10px}#main{background:#252525;width:100%;height:60px}#notifications,code.language-js{white-space:-moz-pre-wrap!important;word-wrap:break-word;word-break:break-all}#data-elements .de-type,span[data-de]{text-decoration:underline}span[data-de]:hover{cursor:pointer}table td{vertical-align:top}#column1,#column2{height:100%;overflow-y:scroll}tr[data-fired=yes] td.fired{color:green} #data-elements .de-type {cursor: pointer;} #rules td.rule {text-decoration: underline; cursor: pointer;}</style>'
@@ -16,7 +26,7 @@ document.write('<html><head><title>Adobe DTM Debugger - BJM</title>'
                +'<br/><br/><hr>'
                +'<div style="color: #adadad">Report issues <a href="https://github.com/brandonJY/Disruptive-Advertising-Adobe-DTM-Debugger/issues">to Brandon</a></div>'
                +'<script type="text/javascript">_dtmDebug.init();<\/script>'
-               +'<script src="tools.js"></script>'
+               +'<script src="'+currentScriptPath()+'tools.js"></script>'
                +'</div>'
                +'<div class="modal fade" id="modal">'
                +'<div class="modal-dialog">'
