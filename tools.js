@@ -52,10 +52,10 @@ var genericTools = {
     },
     globalSearch: {
         inputHTML: '<form onsubmit="return genericTools.parseInputData(event,this,\'globalSearch\')">'
-        + 'Start Object:<input type="text" name="startObject" value=""/><br/>'
-        + 'Search Value:<input type="text" name="searchValue" value=""/><br/>'
-        + 'Search Batch Control:<input type="text" name="searchBatch" value="5000"/><br/>'
-        + 'breakOnFirstFound:<input type="text" name="breakOnFirstFound" value="false"><br/>'
+        + '<table><tr><td>Start Object</td><td><input type="text" name="startObject" value=""/></td></tr>'
+        + '<tr><td>Search Value</td><td><input type="text" name="searchValue" value=""/></td></tr>'
+        + '<tr><td>Search Batch Control</td><td><input type="text" name="searchBatch" value="5000"/></td></tr>'
+        + '<tr><td>breakOnFirstFound</td><td><input type="text" name="breakOnFirstFound" value="false"></td></tr></table>'
         + '<input type="submit" value="Start Search">'
         + '</form>'
         + '<pre class="prettyprint" id="outputTxt" placeholder="output text"></pre>',
