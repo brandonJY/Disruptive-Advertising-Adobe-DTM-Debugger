@@ -36,6 +36,7 @@ var genericTools = {
     splitPayload:{
         inputHTML: '<form onsubmit="return genericTools.parseInputData(event,this,\'splitPayload\')">'
         +'<textarea rows="4" cols="50" name="inputTxt" placeholder="Put the payload you want to split here."></textarea><br/>'
+        +'Split by Symbol: <input type="text" name="splitSymbol" size="1" value="&"/><br/>'
         +'<input type="submit" value="Split payload">'
         +'<pre class="prettyprint" id="outputTxt" placeholder="output text"></pre>',
 
@@ -43,7 +44,7 @@ var genericTools = {
             rawPayload = param[0];
             rawPayload = rawPayload.trim();
             outputTxt = [];
-            rawPayload.split("&").forEach(function (para) {
+            rawPayload.split(param[1]).forEach(function (para) {
                 outputTxt.push(para + "\n");
             }, this);
             (new genericTools.outputHelper('#outputTxt')).log(outputTxt.join(''),'info',true);
