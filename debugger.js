@@ -15,7 +15,7 @@ document.write('<html><head><title>Adobe DTM Debugger - BJM</title>'
                +'<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>'
                +'<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>'
                +'<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>'
-                 +'<script src="https://cdn.rawgit.com/beautify-web/js-beautify/master/js/lib/beautify.js"></script>'
+               +'<script async src="https://cdn.rawgit.com/beautify-web/js-beautify/master/js/lib/beautify.js"></script>'
                +'</head><body>'
                +'<div id="main">'
                +'<h2 style=\"float:right; margin: 0 20px 0 0; height:60px; line-height: 60px; padding: 0; color:#fff;\">DTM Debugger</h2>'
@@ -456,7 +456,7 @@ window._dtmDebug = {
                         def.push('<tr><td style="padding-left: 20px;">events</td><td>'+(t.arguments[0].addEvent.join(',')));
                       }
                       if(t.arguments[0].customSetup){
-                        def.push('<tr><td style="padding-left: 20px;">Custom Code</td><td><pre class="prettyprint"><code class="language-js">'+t.arguments[0].customSetup.toString()+'</code></pre></td></tr>');
+                        def.push('<tr><td style="padding-left: 20px;">Custom Code</td><td><pre class="prettyprint"><code class="language-js">'+js_beautify(t.arguments[0].customSetup.toString())+'</code></pre></td></tr>');
                       }
                     }
                   }
