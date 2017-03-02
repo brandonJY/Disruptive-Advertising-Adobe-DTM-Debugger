@@ -1,53 +1,53 @@
 var genericTools = {
     outputHelper: function (outputFieldSelector) {
-        var outputFieldSelector = outputFieldSelector;
         var isOutputFieldExist = $(outputFieldSelector).length > 0;
         this.log = function (str, logLevel, cleanLog) {
             if (logLevel === 'debug') console.log(str);
             else if (isOutputFieldExist) {
-                if(cleanLog===true) $(outputFieldSelector).text('');
+                if (cleanLog === true) $(outputFieldSelector).text('');
                 $(outputFieldSelector).text($(outputFieldSelector).text() + str + "\n");
                 $(outputFieldSelector).hide().show(0);
             }
             else console.log(str);
-        }
+        };
     },
     inputPopUp: function (toolName) {
-        var inputHTML = eval('genericTools.' + toolName + '.inputHTML');
+        var inputHTML = genericTools[toolName].inputHTML;
         $('#modal').find('.modal-body p').html(inputHTML);
         $('#modal').modal('show');
     },
     parseInputData: function (e, formObj, toolName) {
         e.preventDefault();
         var fields = jQuery(formObj).serializeArray();
-        var nameArray = eval('genericTools.' + toolName + '.paramList');
-        var isNameArrayEmpty=false;
-        if(!nameArray || nameArray.length) isNameArrayEmpty=true;
+        var nameArray = genericTools[toolName].paramList;
+        var isNameArrayEmpty = false;
+        if (!nameArray || nameArray.length) isNameArrayEmpty = true;
         var param = [];
-        fields.forEach(function (element,i) {
-            if(isNameArrayEmpty===true)
-                var index=i;
-            else var index = nameArray.indexOf(element.name);
+        fields.forEach(function (element, i) {
+            var index;
+            if (isNameArrayEmpty === true)
+                index = i;
+            else index = nameArray.indexOf(element.name);
             if (index >= 0) param[index] = element.value;
         });
-        eval('genericTools.' + toolName + '.callFn(param)');
+        genericTools[toolName].callFn(param);
         return false;
     },
-    splitPayload:{
+    splitPayload: {
         inputHTML: '<form onsubmit="return genericTools.parseInputData(event,this,\'splitPayload\')">'
-        +'<textarea rows="4" cols="50" name="inputTxt" placeholder="Put the payload you want to split here."></textarea><br/>'
-        +'Split by Symbol: <input type="text" name="splitSymbol" size="1" value="&"/><br/>'
-        +'<input type="submit" value="Split payload">'
-        +'<pre class="prettyprint" id="outputTxt" placeholder="output text"></pre>',
+        + '<textarea rows="4" cols="50" name="inputTxt" placeholder="Put the payload you want to split here."></textarea><br/>'
+        + 'Split by Symbol: <input type="text" name="splitSymbol" size="1" value="&"/><br/>'
+        + '<input type="submit" value="Split payload">'
+        + '<pre class="prettyprint" id="outputTxt" placeholder="output text"></pre>',
 
-        callFn: function (param){
+        callFn: function (param) {
             rawPayload = param[0];
             rawPayload = rawPayload.trim();
             outputTxt = [];
             rawPayload.split(param[1]).forEach(function (para) {
                 outputTxt.push(para + "\n");
             }, this);
-            (new genericTools.outputHelper('#outputTxt')).log(outputTxt.join(''),'info',true);
+            (new genericTools.outputHelper('#outputTxt')).log(outputTxt.join(''), 'info', true);
         }
 
     },
@@ -71,51 +71,52 @@ var genericTools = {
                 var searched = [];
                 var found = [];
                 searchBatch = searchBatch || 20000;
-                var output = outputFunction||console;
+                var output = outputFunction || console;
 
                 var isArray = function (test) {
                     return Object.prototype.toString.call(test) === '[object Array]';
-                }
-                output.log('','info',true); //clean the output field
+                };
+                output.log('', 'info', true); //clean the output field
                 var count = 0;
                 var isContinue = "yes";
                 while (stack.length > 0 && isContinue == "yes") {
-                    try{
-                            count++;
-                            if (count % searchBatch == 0) {
-                                output.log("Searched:" + searched);
-                                searched = [];
-                                isContinue = prompt("continue?", "yes");
-                            }
+                    try {
+                        count++;
+                        if (count % searchBatch === 0) {
+                            output.log("Searched:" + searched);
+                            searched = [];
+                            isContinue = prompt("continue?", "yes");
+                        }
 
-                            var fromStack = stack.shift();
-                            var obj = fromStack[0];
-                            var address = fromStack[1];
-                            // console.log(address);
-                            if (typeof obj == typeof value && obj.indexOf(value) >= 0) { //if contains value or equal
-                                found.push(address);
-                                output.log("found now=" + found, 'debug');
-                                if (breakOnFirstFound)
-                                    break;
-                            } else if (typeof obj == "object") { //&& searched.indexOf(obj) == -1
-                                if (isArray(obj)) {
-                                    var prefix = '[';
-                                    var postfix = ']';
-                                } else {
-                                    var prefix = '.';
-                                    var postfix = '';
-                                }
-                                for (i in obj) {
-                                    if (typeof obj == typeof value && obj == value) {
-                                        var found = address;
-                                        break;
-                                    }
-                                    stack.push([obj[i], address + prefix + i + postfix]);
-                                }
+                        var fromStack = stack.shift();
+                        var obj = fromStack[0];
+                        var address = fromStack[1];
+                        // console.log(address);
+                        if (typeof obj == typeof value && obj.indexOf(value) >= 0) { //if contains value or equal
+                            found.push(address);
+                            output.log("found now=" + found, 'debug');
+                            if (breakOnFirstFound)
+                                break;
+                        } else if (typeof obj == "object") { //&& searched.indexOf(obj) == -1
+                            var prefix, postfix;
+                            if (isArray(obj)) {
+                                prefix = '[';
+                                postfix = ']';
+                            } else {
+                                prefix = '.';
+                                postfix = '';
                             }
-                            searched.push(address);
-                    }catch(err){
-                        output.log(err,'debug');
+                            for (var i in obj) {
+                                if (typeof obj == typeof value && obj == value) {
+                                    found = address;
+                                    break;
+                                }
+                                stack.push([obj[i], address + prefix + i + postfix]);
+                            }
+                        }
+                        searched.push(address);
+                    } catch (err) {
+                        output.log(err, 'debug');
                     }
                 }
                 output.log("Searched:" + searched);

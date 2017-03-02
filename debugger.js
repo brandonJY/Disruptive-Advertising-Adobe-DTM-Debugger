@@ -6,7 +6,7 @@ var currentScriptPath = function () {
     var currentScriptFile = currentScriptChunks[ currentScriptChunks.length - 1 ];
 
     return currentScript.substring(0,currentScript.lastIndexOf(currentScriptFile));
-}
+};
 
 document.write('<html><head><title>Adobe DTM Debugger - BJM</title>'
                +'<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">'
