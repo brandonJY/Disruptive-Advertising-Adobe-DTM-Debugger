@@ -672,6 +672,8 @@ window._dtmDebug = {
 };
 function toolConfigPopUp(toolHash) {
   var toolConfig = window.opener._satellite.tools[toolHash];
+  if (toolConfig.settings.engine === 'visitor_id')
+    toolConfig = toolConfig.settings;
   var cache = [];
   var toolConfigStr = JSON.stringify(toolConfig, function (key, value) {
     if (typeof value !== 'undefined' && value !== null) {
