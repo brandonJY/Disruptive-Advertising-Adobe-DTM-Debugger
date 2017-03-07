@@ -674,16 +674,18 @@ function toolConfigPopUp(toolHash) {
   var toolConfig = window.opener._satellite.tools[toolHash];
   var cache = [];
   var toolConfigStr = JSON.stringify(toolConfig, function (key, value) {
-    if (typeof value === 'object' && value !== null) {
+    if (typeof value !== 'undefined' && value !== null) {
       if (cache.indexOf(value) !== -1) {
         // Circular reference found, discard key
         return;
       }
       // Store value in our collection
+      if (typeof value === 'function')
+        value = value.toString();
       cache.push(value);
     }
     return value;
   });
-  $('#modal').find('.modal-body p').html("<pre class='prettyprint'><code class='language-json'>" + js_beautify(toolConfigStr) + "</code></pre>");
+  $('#modal').find('.modal-body p').html("<pre class='prettyprint'><code class='language-js'>" + js_beautify(toolConfigStr) + "</code></pre>");
   $('#modal').modal('show');
 }
