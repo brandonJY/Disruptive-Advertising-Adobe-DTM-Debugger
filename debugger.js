@@ -7,7 +7,6 @@ var currentScriptPath = function () {
 
     return currentScript.substring(0,currentScript.lastIndexOf(currentScriptFile));
 };
-
 document.write('<html><head><title>Adobe DTM Debugger - BJM</title>'
                +'<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">'
                +'<style type="text/css">td.de-type{cursor:pointer;text-decoration:underline}table tbody td,table thead th{padding-right:20px}body{margin:0}*{font-family:Arial,Helvetica,sans-serif}table{border:0;margin:10px 0}table thead th{text-align:left}table.info{margin:10px 0 0}table.info td{font-size:12px;color:#adadad}h1{margin-left:10px}h2{font-size: 25px}#dtm-content{padding:10px}#main{background:#252525;width:100%;height:60px}#notifications,code.language-js{white-space:-moz-pre-wrap!important;word-wrap:break-word;word-break:break-all}#data-elements .de-type,span[data-de]{text-decoration:underline}span[data-de]:hover{cursor:pointer}table td{vertical-align:top}#column1,#column2{height:100%;overflow-y:scroll}tr[data-fired=yes] td.fired{color:green} #data-elements .de-type {cursor: pointer;} #rules td.rule {text-decoration: underline; cursor: pointer;}</style>'
@@ -334,7 +333,7 @@ window._dtmDebug = {
         }
         if(tool.settings.engine=='visitor_id'&&window.opener.Visitor) version="="+window.opener.Visitor.version;
         if(tool && tools != 'default')
-          html.push('<p data-toolid="'+tools+'">'+toolNames[tool.settings.engine]+version+'</p>');
+          html.push('<p data-toolid="'+tools+'"><a href="#" onclick="toolConfigPopUp(\''+tools+'\')" >' +toolNames[tool.settings.engine]+'</a>'+version+'</p>');
       }
       html.push("</td></tr>");
       html.push("</table>");
@@ -583,7 +582,7 @@ window._dtmDebug = {
     html.push('<tr><td>Current Environment:</td><td>'+env+button+'</td></tr>');
     html.push('<tr><td>Current URL:</td><td>'+window.opener.location.href+'</td></tr>');
     html.push('<tr><td>Web Property ID:</td><td>'+_satellite.settings.libraryName+'</td></tr>');
-    if(env == true)
+    if(env == 'Staging')
       html.push('<tr><td>Build Date:</td><td>'+_satellite.buildDate+'</td></tr>');
     else
       html.push('<tr><td>Publish Date:</td><td>'+_satellite.publishDate+'</td></tr>');
@@ -671,3 +670,20 @@ window._dtmDebug = {
     }
   }
 };
+function toolConfigPopUp(toolHash) {
+  var toolConfig = window.opener._satellite.tools[toolHash];
+  var cache = [];
+  var toolConfigStr = JSON.stringify(toolConfig, function (key, value) {
+    if (typeof value === 'object' && value !== null) {
+      if (cache.indexOf(value) !== -1) {
+        // Circular reference found, discard key
+        return;
+      }
+      // Store value in our collection
+      cache.push(value);
+    }
+    return value;
+  });
+  $('#modal').find('.modal-body p').html("<pre class='prettyprint'><code class='language-json'>" + js_beautify(toolConfigStr) + "</code></pre>");
+  $('#modal').modal('show');
+}
