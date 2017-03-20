@@ -14,7 +14,7 @@ document.write('<html><head><title>Adobe DTM Debugger - BJM</title>'
                +'<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>'
                +'<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>'
                +'<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>'
-               +'<script async src="https://cdn.rawgit.com/beautify-web/js-beautify/master/js/lib/beautify.js"></script>'
+               +'<script async src="'+currentScriptPath()+'lib/beautify.js"></script>'
                +'</head><body>'
                +'<div id="main">'
                +'<h2 style=\"float:right; margin: 0 20px 0 0; height:60px; line-height: 60px; padding: 0; color:#fff;\">DTM Debugger</h2>'
@@ -47,7 +47,8 @@ document.write('<html><head><title>Adobe DTM Debugger - BJM</title>'
 //origin: http://assets.adobedtm.com/d00638433326249dc42ea6fc89a4f65bfba18066/scripts/satellite-55fae9a2666337593b0005c2.js
 var toolKitHTML = '<h2>Tool Kits</h2>'
     + '<button onclick=\"genericTools.inputPopUp(\'splitPayload\')\">Split payload</button>'
-    + '&nbsp;<button onclick=\"genericTools.inputPopUp(\'globalSearch\')\">Global Search variable value</button>';
+    + '&nbsp;<button onclick=\"genericTools.inputPopUp(\'globalSearch\')\">Global Search variable value</button>'
+    + '&nbsp;<button onclick=\"genericTools.inputPopUp(\'jsBeautify\')\">JS Beautify</button>';
 window._dtmDebug = {
   tool:{
     parseDataElement:function(_satellite,a,arg_a){
@@ -333,7 +334,7 @@ window._dtmDebug = {
         }
         if(tool.settings.engine=='visitor_id'&&window.opener.Visitor) version="="+window.opener.Visitor.version;
         if(tool && tools != 'default')
-          html.push('<p data-toolid="'+tools+'"><a href="#" onclick="toolConfigPopUp(\''+tools+'\')" >' +toolNames[tool.settings.engine]+'</a>'+version+'</p>');
+          html.push('<p data-toolid="'+tools+'"><a href="#">' +toolNames[tool.settings.engine]+'</a>'+version+'</p>');
       }
       html.push("</td></tr>");
       html.push("</table>");
@@ -375,6 +376,37 @@ window._dtmDebug = {
 
 
       jQuery('#dtm-info').html(html.join(""));
+      jQuery('p[data-toolid] >a').on('click', function () {
+        var toolHash = $(this).parents('p').attr('data-toolid');
+        
+        var customFn=[];
+        var fnPlaceHolderSymbol='[fnInjectPlaceholder]';
+
+        var toolConfig = _satellite.tools[toolHash];
+        if (toolConfig.settings.engine === 'visitor_id')
+          toolConfig = toolConfig.settings;
+        var cache = [];
+        var toolConfigStr = JSON.stringify(toolConfig, function (key, value) {
+          if (typeof value !== 'undefined' && value !== null) {
+            if (cache.indexOf(value) !== -1) {
+              // Circular reference found, discard key
+              return;
+            }
+            // Store value in our collection
+            if (typeof value === 'function'){
+              customFn.push(js_beautify(value.toString()));
+              value=fnPlaceHolderSymbol;
+            }
+            cache.push(value);
+          }
+          return value;
+        });
+       while(customFn.length>0){
+         toolConfigStr=toolConfigStr.replace('"'+fnPlaceHolderSymbol+'"',customFn.shift());
+       }
+        $('#modal').find('.modal-body p').html("<pre class='prettyprint'><code class='language-js'>" + js_beautify(toolConfigStr) + "</code></pre>");
+        $('#modal').modal('show');
+      });
       jQuery('#custom-reverse-order').on('click', function(){
         _dtmDebug.saved.reverse = $(this).is(':checked');
         _dtmDebug.getNotifications();
@@ -670,24 +702,3 @@ window._dtmDebug = {
     }
   }
 };
-function toolConfigPopUp(toolHash) {
-  var toolConfig = window.opener._satellite.tools[toolHash];
-  if (toolConfig.settings.engine === 'visitor_id')
-    toolConfig = toolConfig.settings;
-  var cache = [];
-  var toolConfigStr = JSON.stringify(toolConfig, function (key, value) {
-    if (typeof value !== 'undefined' && value !== null) {
-      if (cache.indexOf(value) !== -1) {
-        // Circular reference found, discard key
-        return;
-      }
-      // Store value in our collection
-      if (typeof value === 'function')
-        value = value.toString();
-      cache.push(value);
-    }
-    return value;
-  });
-  $('#modal').find('.modal-body p').html("<pre class='prettyprint'><code class='language-js'>" + js_beautify(toolConfigStr) + "</code></pre>");
-  $('#modal').modal('show');
-}

@@ -1,7 +1,7 @@
 # Disruptive-Advertising-Adobe-DTM-Debugger
 Modification of disruptive-advertising-adobe-dtm-debugger.
 
-Please see [this change log](https://github.com/brandonJY/Disruptive-Advertising-Adobe-DTM-Debugger/wiki/Change-Log) for complete list of modifications have been made
+Please see [this change log](chagelog.md) for complete list of modifications have been made
 
 ####Origin: https://www.disruptiveadvertising.com/analytics/introducing-the-adobe-dtm-debugger/
 
