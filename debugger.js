@@ -280,7 +280,16 @@ window._dtmDebug = {
       html.push('<table class="info">'+this.getSettings(_satellite,true)+'</table>');
       html.push('<div class="clearfix"></div>');
 
-      html.push('<h2>Rules</h2><div><input type="checkbox" id="show-fired"'+(_dtmDebug.saved.showFired == true ? ' checked="checked"' : '')+'> <label for="show-fired">Only show fired rules</label></div>');
+      var ruleCountStr='';
+      _dtmDebug.rules.forEach(function (rule) {
+        var rls = _satellite.configurationSettings[rule.id];
+        if (rls.length>0)
+          ruleCountStr+=''+rule.id + ': ' + rls.length + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+      });
+
+      html.push('<h2>Rules</h2><span style="color:#adadad">'+ruleCountStr+'</span><div>');
+
+      html.push('<input type="checkbox" id="show-fired"'+(_dtmDebug.saved.showFired == true ? ' checked="checked"' : '')+'> <label for="show-fired">Only show fired rules</label></div>');
       html.push('<table id="rules" class="table table-striped"><thead><tr><th>Rule Name</th><th>Rule Type</th><th>Fired?</th><th>Other Info</th></tr></thead><tbody>');
       _satellite.each(rules, function(rule){
         var rls = _satellite.configurationSettings[rule.id];
@@ -339,7 +348,7 @@ window._dtmDebug = {
       html.push("</td></tr>");
       html.push("</table>");
       // data elements
-      html.push('<h2>Data Elements</h2>');
+      html.push('<h2>Data Elements: '+Object.keys(_satellite.dataElements).length+'</h2>');
       html.push('<table id="data-elements" class="table table-striped"><thead><tr><th>Name</th><th>Type</th><th>Value</th></tr></thead><tbody>');
 
       for(var dName in _satellite.dataElements){
